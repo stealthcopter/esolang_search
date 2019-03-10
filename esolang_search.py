@@ -3,6 +3,7 @@ import requests
 import argparse
 from bs4 import BeautifulSoup
 from termcolor import colored
+import random
 
 # Grab all languages on https://esolangs.org
 URL_ESOLANG_BASE = "https://esolangs.org"
@@ -58,7 +59,7 @@ def print_error(message):
     print_color(message,'red')
 
 def banner():
-    color = 'green'
+    color = random.choice(['green', "yellow", "red", "magenta", "cyan"])
     print("")
     print_color("  ▓█████   ██████  ▒█████   ██▓    ▄▄▄       ███▄    █   ▄████", color)
     print_color("  ▓█   ▀ ▒██    ▒ ▒██▒  ██▒▓██▒   ▒████▄     ██ ▀█   █  ██▒ ▀█▒", color)
@@ -78,7 +79,7 @@ def banner():
     print_color("  ░ ░▒  ░ ░ ░ ░  ░ ▒   ▒▒ ░  ░▒ ░ ▒░  ░  ▒    ▒ ░▒░ ░          ", color)
     print_color("  ░  ░  ░     ░    ░   ▒     ░░   ░ ░         ░  ░░ ░          ", color)
     print_color("        ░     ░  ░     ░  ░   ░     ░ ░       ░  ░  ░          ", color)
-    print("                                    ░                          \n")
+    print_color("                                    ░                          \n", color)
     print(" Website: https://github.com/stealthcopter/esolang_search")
     print(" Author: Stealthcopter\n")
     print(" Search for esoteric languages by title, descriptions and or code examples\n")
@@ -229,12 +230,12 @@ def searchLanguagePageForCode(languages, codeTerms, caseSensitive = False):
 
     return languages
 
-def printResult(results, max_results = 40):
+def printResult(results, max_results = 10):
     if len(results) == 0:
         print_error("Sorry there were no results")
         return
     
-    printVerbose(1, "Score | Title | Link")
+    printVerbose(1, "\nScore | Title | Link")
     noResults = 0
     for result in sorted(results, key=lambda lang: lang.getScore(), reverse=True):
         noResults+=1
@@ -243,10 +244,11 @@ def printResult(results, max_results = 40):
         
         print(result.getScore(),colored(result.title, "cyan",None,["bold"]), colored(result.link, "magenta",None,["underline"]))
         matches = result.getMatches()
-        if not matches == "":
+        if verboseness > 0 and not matches == "":
             print(matches)
+    print()
 
-def run(searchTerms, descTerms, codeTerms, max_results = 40):
+def run(searchTerms, descTerms, codeTerms, max_results = 10):
     # Setup search parameters
     searchByName = len(searchTerms) != 0
     searchByDesc = len(descTerms) != 0
@@ -304,7 +306,7 @@ parser.add_argument("-d", "--desc", help="text to search for in the description 
 parser.add_argument("-c", "--code", help="text to search for in the code examples of a language")
 
 # parser.add_argument("-dsh", "--dont-show-hits", help="Don't show the search hits for each result", action='count')
-# parser.add_argument("-m", "--max-results", help="Maximum number of results to show')
+parser.add_argument("-m", "--max-results", help="Maximum number of results to show",  type=int, default=10)
 parser.add_argument("-dc", "--delete-cache", help="Delete the cache following completion", action='count')
 
 parser.add_argument("-q", "--quiet", help="Only output results", action='count')
@@ -325,6 +327,7 @@ if args.quiet != None:
 if (args.title == None and args.desc == None and args.code == None):
     if args.quiet == None:
         banner()
+        examples()
     interactiveInputMode()
     
 else:
@@ -342,7 +345,7 @@ else:
     if args.code is not None:
         codeTerms = args.code.split(" ") 
     
-    run(searchTerms, descTerms, codeTerms)
+    run(searchTerms, descTerms, codeTerms, max_results = args.max_results)
 
 
 if args.delete_cache is not None:

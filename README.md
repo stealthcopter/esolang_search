@@ -4,7 +4,6 @@ Tool to search for esoteric languages by title/description or code examples
 ## TODO ##
 Add additional arguments:
  - -td combine -t/-d -title/-description
- - --max-results
  - --dont-show-hits
 
 Features
