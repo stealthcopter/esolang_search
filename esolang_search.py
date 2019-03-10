@@ -300,21 +300,19 @@ def interactiveInputMode():
     run(searchTerms, descTerms, codeTerms)
 
 
-parser = argparse.ArgumentParser(description='Search for esoteric languages by their name, description or code examples')
+parser = argparse.ArgumentParser(description='Search for esoteric languages by their name, description or code examples. All search terms should be enclosed in speech marks and spaces are used to denote seperate terms. i.e. --title \"brain fuck\" searches for languages with brain or fuck in tht title.')
 parser.add_argument("-t", "--title", help="text to search for in the title of a language")
 parser.add_argument("-d", "--desc", help="text to search for in the description of a language")
 parser.add_argument("-c", "--code", help="text to search for in the code examples of a language")
 
 # parser.add_argument("-dsh", "--dont-show-hits", help="Don't show the search hits for each result", action='count')
 parser.add_argument("-m", "--max-results", help="Maximum number of results to show",  type=int, default=10)
-parser.add_argument("-dc", "--delete-cache", help="Delete the cache following completion", action='count')
+parser.add_argument("-dc", "--delete-cache", help="Delete the cache following completion. Not deleting the cache greatly improves speed between searches, however cache should be deleted over long time periods to account for changes on the website", action='count')
 
 parser.add_argument("-q", "--quiet", help="Only output results", action='count')
-parser.add_argument("-v", "--verbose", action='count')
+parser.add_argument("-v", "--verbose", action='count', help="verboseness as v/vv/vvv")
 
 args = parser.parse_args()
-
-print(args)
 
 # Set verboseness global
 if args.verbose != None:
